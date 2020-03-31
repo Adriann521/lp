@@ -4,7 +4,7 @@ dotenv.config({
   path: './.env'
 });
 
-mongoose.connect(process.env.MONGO_DB, {useNewUrlParser: true}) 
+mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true}) 
 
 mongoose.connection.on('connected', function () {  
   console.log('Mongoose default connection open');
