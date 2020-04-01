@@ -1,0 +1,59 @@
+.shows{ text-align: center;
+}
+.shows a{
+    color:black;
+}
+
+.shows span{
+    min-height:75px;
+    min-height: 110px;
+    display: inline-block;
+}
+
+.content-box {
+}
+
+#season-tabs {
+margin: 0 auto;}
+
+#header{ 
+margin-bottom: 25px;
+}
+
+#header a{
+    color:#fff
+}
+
+li#logout {
+    float: right;
+}
+
+.navz {
+    float:left;
+}
+
+.navigation {
+    background-color: #3c3c3c;
+    color: red;
+}
+
+.navigation a{
+    color: #fff;
+}
+.form-control {
+    border: 0;
+    outline: none;
+    border: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;}
+.registerLogin { 
+    border:0;
+    border-bottom: #424141 1px solid ;
+    box-shadow: none;
+}
+
+.loginRegisterTitle a {
+    outline:none;
+}
+
