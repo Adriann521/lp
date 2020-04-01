@@ -1,4 +1,3 @@
-var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var app = express();
@@ -20,11 +19,11 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-
-app.get('/*', (req, res) => {
+@@ -10,4 +25,37 @@ app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
+module.exports = app;
 app.post("/register", async (req, res) => {
     try {
       req.body.password = await bcrypt.hash(req.body.password, 8);
@@ -44,7 +43,7 @@ app.post("/register", async (req, res) => {
           level: doc.level,
           username: doc.username
         };
-   
+
         let token = jwt.sign(payload);
         console.log(token);
         res.json({ result: "success", token, message: "Login successfully" });
