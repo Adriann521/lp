@@ -9,10 +9,6 @@ var mongoose = require( 'mongoose' );
 const bcrypt = require('bcrypt');
 const jwt = require("./jwt");
 const dotenv = require('dotenv');
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(
-  "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"
-);
 dotenv.config({
   path: './.env'
 });
@@ -61,26 +57,4 @@ app.post("/register", async (req, res) => {
     }
   });
 
-app.post("/contact", async (req, res) => {
-  const email  = req.body
-  const emailData = {
-    to: "lastplayus@outlook.com",
-    from: "support@lastplay.tv",
-    subject: `${email.username}: Support`,
-    text: `${email.body} -${email.email}`,
-    html: `${email.body} -${email.email}`
-  };
-  sgMail
-    .send(emailData)
-    .then(response => {
-    return res.json({
-      result: "success",
-      message: `Thank you for your email ${email.username}. We will be contacting you shortly.`
-    })
-  })
-  .catch(err => {
-    return res.json({ result: "error", message: err.message });
-  });
-
-})
   module.exports = app;
