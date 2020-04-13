@@ -18,6 +18,18 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(
   "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"
 );
+
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+
 app.post("/login", async (req, res) => {
   let doc = await Users.findOne({ username: req.body.username });
   if (doc) {
