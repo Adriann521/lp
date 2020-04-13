@@ -40,55 +40,19 @@ app.post("/login", async (req, res) => {
       }
     } else {
       // Invalid password
-      res.json({ result: "error", message: "Invalid password" });
+      res.json({ result: "error", message: "Invalid username or password." });
     }
   } else {
     // Invalid username
-    res.json({ result: "error", message: "Invalid username" });
+    res.json({ result: "error", message: "Invalid username or password." });
   }
-});
-app.post("/register", async (req, res) => {
+});app.post("/register", async (req, res) => {
   try {
     req.body.password = await bcrypt.hash(req.body.password, 8);
-
-    const { first_name, last_name, email } = req.body;
-    const token = jsonwebtoken.sign(
-      { first_name, last_name, email },
-      "process.env.JWT_ACCOUNT_ACTIVATION",
-      { expiresIn: "365d" }
-    );
-    const emailData = {
-      to: email,
-      from: "admin@lastplay.tv",
-      subject: `Account activation link`,
-      text: `test email`,
-      html: `
-          <h1>Please use the following link to activate your account</h1>
-          <p><a href="localhost:8080/activation/${token}">Activation link</p>
-          <hr />
-          <p>This email may contain sensetive information</p>
-          <p>and link will  expired in 365 days</p>
-      `
-    };
-    req.body.activated_token = token;
-    let user = await Users.create(req.body);
-    sgMail
-      .send(emailData)
-      .then(sent => {
-        return res.json({
-          result: "success",
-          message: `Email has been sent to ${email}. Follow the instruction to activate your account`
-        });
-      })
-      .catch(err => {
-        // console.log('SIGNUP EMAIL SENT ERROR', err)
-        return res.json({
-          result: "error",
-          message: err.message
-        });
-      });
+    await Users.create(req.body);
+    res.json({ result: "success", message: "Register successfully" });
   } catch (err) {
-    res.json({ result: "error", message: err.errmsg });
+    res.json({ result: "error", message: "That username is not available" });
   }
 });
 app.get("/activation/:token", async (req, res) => {
@@ -116,48 +80,6 @@ app.get("/activation/:token", async (req, res) => {
   }
 });
 
-app.post("/profile", async (req, res) => {
-  try {
-    await Users.create(req.body);
-    res.json({ result: "success", message: "Register successfully" });
-  } catch (err) {
-    res.json({ result: "error", message: err.errmsg });
-  }
-});
-
-uploadImage = async (files, doc) => {
-  if (files.avatars != null) {
-    var fileExtention = files.avatars.name.split(".").pop();
-    doc.avatars = `${Date.now()}+${doc.username}.${fileExtention}`;
-    var newpath =
-      path.resolve(__dirname + "/uploaded/images/") + "/" + doc.avatars;
-
-    if (fs.exists(newpath)) {
-      await fs.remove(newpath);
-    }
-    await fs.move(files.avatars.path, newpath);
-
-    // Update database
-    await Users.findOneAndUpdate({ _id: doc.id }, doc);
-  }
-};
-app.put("/profile", async (req, res) => {
-  try {
-    var form = new formidable.IncomingForm();
-    form.parse(req, async (err, fields, files) => {
-      let doc = await Users.findOneAndUpdate({ _id: fields.id }, fields);
-      await uploadImage(files, fields);
-      res.json({ result: "success", message: "Update Successfully" });
-    });
-  } catch (err) {
-    res.json({ result: "error", message: err.errmsg });
-  }
-});
-app.get("/profile/id/:id", async (req, res) => {
-  let doc = await Users.findOne({ _id: req.params.id });
-
-  res.json(doc);
-});
 app.post("/password/reset", async (req, res) => {
   let expired_time = "60m";
   const { email } = req.body;
@@ -184,7 +106,7 @@ app.post("/password/reset", async (req, res) => {
       text: `test email`,
       html: `
                 <h1>Please use the following link to reset your password</h1>
-                <a href="http://localhost:3001/password/reset/${token}">Reset passord link</p>
+                <a href="https://lastplay.tv/password/reset/${token}">Reset passord link</p>
                 <hr />
                 <p>This link will expired in 60 minutes</p>
                 
@@ -280,88 +202,4 @@ app.post("/contact", async (req, res) => {
 
 
 module.exports = app;
-
-
-
-var express = require('express');
-var path = require('path');
-var app = express();
-require("./db");
-const Users = require("./models/user_schema");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-var mongoose = require( 'mongoose' ); 
-const bcrypt = require('bcrypt');
-const jwt = require("./jwt");
-const dotenv = require('dotenv');
-dotenv.config({
-  path: './.env'
-});
-
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-app.use(express.static(path.join(__dirname, 'build')));
-
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-module.exports = app;
-app.post("/register", async (req, res) => {
-    try {
-      req.body.password = await bcrypt.hash(req.body.password, 8);
-      await Users.create(req.body);
-      res.json({ result: "success", message: "Register successfully" });
-    } catch (err) {
-      res.json({ result: "error", message: "That username is not available" });
-    }
-  });
-
-  app.post("/login", async (req, res) => {
-    let doc = await Users.findOne({ username: req.body.username });
-    if (doc) {
-      if (bcrypt.compareSync(req.body.password, doc.password)) {
-        const payload = {
-          id: doc._id,
-          level: doc.level,
-          username: doc.username
-        };
-
-        let token = jwt.sign(payload);
-        console.log(token);
-        res.json({ result: "success", token, message: "Login successfully" });
-      } else {
-        // Invalid password
-        res.json({ result: "error", message: "Invalid password" });
-      }
-    } else {
-      // Invalid username
-      res.json({ result: "error", message: "Invalid username" });
-    }
-  });
-
-  app.post("/contact", async (req, res) => {
-    const email  = req.body
-    const emailData = {
-      to: "lastplayus@outlook.com",
-      from: "support@lastplay.tv",
-      subject: `${email.username}: Support`,
-      text: `${email.body} -${email.email}`,
-      html: `${email.body} -${email.email}`
-    };
-    sgMail
-      .send(emailData)
-      .then(response => {
-      return res.json({
-        result: "success",
-        message: `Thank you for your email ${email.username}. We will be contacting you shortly.`
-      })
-    })
-    .catch(err => {
-      return res.json({ result: "error", message: err.message });
-    });
-  
-  })
 
