@@ -16,7 +16,7 @@ const jwt = require("./jwt");
 // sendgrid
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(
-  "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"
+  "process.env.EMAIL_API"
 );
 
 app.use(cors());
