@@ -159,7 +159,7 @@ app.put("/password/reset/", async (req, res) => {
     ).then(responses => {
       return res.json({
         result: "success",
-        message: "Password update succesfully your can try login again"1
+        message: "Password update succesfully your can try login again"
       });
     });
   } else {
