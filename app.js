@@ -60,6 +60,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.put("/register/:activated_token", async (req, res) => {
+req.body.email = req.body.email.toLowerCase()
 let invite = await Invite.findOne({"activated_token": req.body.activated_token})
 console.log(req.body)
 if(invite && invite.status == "pending" && invite.email == req.body.email) {
@@ -195,6 +196,7 @@ app.post("/contact", async (req, res) => {
 })
 
 app.post("/invite", async (req, res) => {
+  req.body.email = req.body.email.toLowerCase()
   const { email } = req.body;
   const token = jsonwebtoken.sign(
     { email }, "process.env.JWT_ACCOUNT_ACTIVATION",
