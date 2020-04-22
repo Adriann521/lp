@@ -28,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  console.log(req.headers)
 });
 
 app.post("/login", async (req, res) => {
@@ -60,7 +61,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.put("/register/:activated_token", async (req, res) => {
-req.body.email = req.body.email.toLowerCase()
+  req.body.email = req.body.email.toLowerCase()
 let invite = await Invite.findOne({"activated_token": req.body.activated_token})
 console.log(req.body)
 if(invite && invite.status == "pending" && invite.email == req.body.email) {
@@ -91,7 +92,6 @@ app.post("/password/reset", async (req, res) => {
         message: "User with that email does not exist"
       });
     }
-console.log(user)
     const token = jsonwebtoken.sign(
       { _id: user._id, name: user.username },
       "process.env.JWT_RESET_PASSWORD",
