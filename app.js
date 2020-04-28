@@ -10,6 +10,11 @@ app.use(express.static(__dirname + "/uploaded"));
 require("./db");
 const Users = require("./models/user_schema");
 const Invite = require("./models/invite_schema");
+const url = 'https://api.telegram.org/bot';
+const apiToken = process.env.REPORT_BOT;
+const axios = require('axios')
+
+
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,6 +35,37 @@ app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
   console.log(req.headers)
 });
+app.post('/report', function(req, res) {
+  const message  = req.body
+
+  axios
+    .post(
+      `https://api.telegram.org/bot${process.env.REPORT_BOT}/sendMessage`,
+      {
+        chat_id: process.env.REPORT_CHAT_ID,
+        parse_mode: 'HTML',
+        text: `
+                    <b>Stream Reported</b>
+${message.location} - ${message.stream}
+${message.user}
+
+              USER INFO: 
+
+<i>${message.platform} | ${message.vendor} </i>`
+      }
+    )
+    .then(response => {
+      // We get here if the message was successfully posted
+      res.json({ result: "success", message: "Our stream engineers have been notified that there may be an issue with this stream. We apologize for the inconvenience." })
+      res.end('ok')
+    })
+    .catch(err => {
+      // ...and here if it was not
+      console.log('Error :', err)
+      res.end('Error :' + err)
+    })
+})
+
 
 app.post("/login", async (req, res) => {
   let doc = await Users.findOne({ username: req.body.username });
@@ -38,7 +74,7 @@ app.post("/login", async (req, res) => {
       if (doc.status != "not_activated") {
         const payload = {
           id: doc._id,
-          level: doc.level,
+          level: doc.level,  
           username: doc.username
         };
 
