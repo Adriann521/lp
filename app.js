@@ -13,7 +13,7 @@ const Invite = require("./models/invite_schema");
 const url = 'https://api.telegram.org/bot';
 const apiToken = process.env.REPORT_BOT;
 const axios = require('axios')
-
+var port = process.env.PORT || 8080;
 
 
 app.use(cors());
@@ -60,10 +60,36 @@ ${message.user}
       res.end('ok')
     })
     .catch(err => {
-      // ...and here if it was not
-      console.log('Error :', err)
-      res.end('Error :' + err)
+      return res.json({ result: "error", message: err.message });
     })
+})
+
+app.post('/request', function(req, res) {
+  const message  = req.body
+  console.log(message)
+
+  axios
+    .post(
+      `https://api.telegram.org/bot${process.env.REPORT_BOT}/sendMessage`,
+      {
+        chat_id: process.env.REPORT_CHAT_ID,
+        parse_mode: 'HTML',
+        text: `
+                    <b>Movie Requested</b>
+${message.user} - ${message.request}
+`
+      }
+    )
+    .then(response => {
+      // We get here if the message was successfully posted
+      res.json({ result: "success", message: "Thank you for your request and we hope to bring you more of what YOU want to watch. Please check back soon!" })
+      res.end('ok')
+    })
+    .catch(err => {
+      return res.json({ result: "error", message: err.message });
+    })
+    
+
 })
 
 
@@ -261,5 +287,7 @@ app.post("/invite", async (req, res) => {
   });
 })
   
-
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
 module.exports = app;
