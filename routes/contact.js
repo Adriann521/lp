@@ -1,6 +1,12 @@
 const express = require('express') 
 const contactRoute = express.Router();
 
+// sendgrid
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(
+  process.env.EMAIL_API);
+
+
 contactRoute.post("/", async (req, res) => {
   const email  = req.body
   const emailData = {
