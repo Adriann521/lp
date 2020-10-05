@@ -32,10 +32,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const jwt = require("./jwt");
-// sendgrid
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(
-  process.env.EMAIL_API);
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
