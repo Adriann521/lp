@@ -74,10 +74,6 @@ app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
 app.get('/blog', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
