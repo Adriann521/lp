@@ -1,5 +1,12 @@
 const express = require('express') 
 const registerRoute = express.Router();
+const Users = require("../models/user_schema");
+const Invite = require("../models/invite_schema");
+const sgMail = require("@sendgrid/mail");
+const bcrypt = require("bcrypt");
+sgMail.setApiKey(
+  process.env.EMAIL_API);
+
 
 registerRoute.put("/:activated_token", async (req, res) => {
   req.body.email = req.body.email.toLowerCase()

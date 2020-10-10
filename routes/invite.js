@@ -1,6 +1,12 @@
 const express = require('express') 
 const inviteRoute = express.Router();
 
+const jsonwebtoken = require("jsonwebtoken");
+const Invite = require("../models/invite_schema");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(
+  process.env.EMAIL_API);
+
 inviteRoute.post("/", async (req, res) => {
     req.body.email = req.body.email.toLowerCase()
     const { email } = req.body;

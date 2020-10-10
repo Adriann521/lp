@@ -1,15 +1,11 @@
 require("dotenv").config({ path: __dirname + "/.env" });
 const express = require("express");
-//const bcrypt = require("bcrypt");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-//const jsonwebtoken = require("jsonwebtoken");
 app.use(express.static(__dirname + "/uploaded"));
 require("./db");
-//const Users = require("./models/user_schema");
-//const Invite = require("./models/invite_schema");
 //const url = 'https://api.telegram.org/bot';
 //const axios = require('axios')
 //const router = express.Router()
@@ -32,6 +28,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const jwt = require("./jwt");
+// sendgrid
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -74,6 +71,10 @@ app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 app.get('/blog', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
@@ -82,9 +83,7 @@ app.get('/invite', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-app.get('/contact', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+
 
 app.use('/report', reportRoute)
 app.use('/request', requestRoute)

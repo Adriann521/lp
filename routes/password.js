@@ -1,5 +1,11 @@
 const express = require('express') 
 const passwordRoute = express.Router();
+const Users = require("../models/user_schema");
+const jsonwebtoken = require("jsonwebtoken");
+const sgMail = require("@sendgrid/mail");
+const bcrypt = require("bcrypt");
+sgMail.setApiKey(
+  process.env.EMAIL_API);
 
 passwordRoute.post("/reset", async (req, res) => {
     let expired_time = "60m";
