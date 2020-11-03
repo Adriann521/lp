@@ -5,11 +5,6 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(
   process.env.EMAIL_API);
 
-  
-contactRoute.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
 contactRoute.post("/", async (req, res) => {
   console.log('post works')
   const email  = req.body

@@ -83,6 +83,10 @@ app.get('/invite', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
+app.get('/contact', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 
 
 app.use('/report', reportRoute)
