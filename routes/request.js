@@ -7,7 +7,7 @@ requestRoute.post('/', function(req, res) {
     console.log(message)
   
     axios
-      .get(
+      .post(
         `https://api.telegram.org/bot${process.env.REPORT_BOT}/sendMessage`,
         {
           chat_id: process.env.REPORT_CHAT_ID,
@@ -21,7 +21,7 @@ requestRoute.post('/', function(req, res) {
       .then(response => {
         // We get here if the message was successfully posted
         res.json({ result: "success", message: "Thank you for your request and we hope to bring you more of what YOU want to watch. Please check back soon!" })
-        res.end('ok')
+      //  res.end('ok')
       })
       .catch(err => {
         return res.json({ result: "error", message: err.message });
