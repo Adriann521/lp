@@ -7,7 +7,7 @@ requestRoute.post('/', function(req, res) {
     console.log(message)
   
     axios
-      .post(
+      .get(
         `https://api.telegram.org/bot${process.env.REPORT_BOT}/sendMessage`,
         {
           chat_id: process.env.REPORT_CHAT_ID,
