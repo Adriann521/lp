@@ -86,6 +86,10 @@ app.get("/contact", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
+app.get("/ufc263", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
 app.use("/report", reportRoute);
 app.use("/request", requestRoute);
 
